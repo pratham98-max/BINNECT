@@ -6,7 +6,9 @@ import LandingPage from './pages/LandingPage';
 import ExplorePage from './pages/ExplorePage';
 import Dashboard from './pages/Dashboard';
 import RegisterPage from './pages/RegisterPage';
-import SavedPage from './pages/SavedPage'; // Ensure this file exists in src/pages!
+import SavedPage from './pages/SavedPage';
+import ProfilePage from './pages/ProfilePage';
+import EnquiryPage from './pages/EnquiryPage'; // Added this import
 
 function App() {
   return (
@@ -25,12 +27,19 @@ function App() {
           {/* Registration Form */}
           <Route path="/register" element={<RegisterPage />} />
           
-          {/* 2. THE NEW SAVED BUSINESSES ROUTE */}
+          {/* Saved Businesses */}
           <Route path="/saved" element={<SavedPage />} />
+
+          {/* Dynamic Profile Route */}
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          
+          {/* 2. THE NEW DYNAMIC ENQUIRY ROUTE */}
+          {/* This allows users to reach /enquiry/[business-id] */}
+          <Route path="/enquiry/:id" element={<EnquiryPage />} />
           
           {/* Catch-all for mistakes */}
           <Route path="*" element={
-            <div className="p-20 text-center font-black uppercase italic">
+            <div className="p-20 text-center font-black uppercase italic bg-[#050505] min-h-screen text-white">
               <h1 className="text-6xl mb-4">404</h1>
               <p>Niche Not Found</p>
             </div>

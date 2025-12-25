@@ -4,6 +4,8 @@ import { LayoutDashboard, Plus, Briefcase, Users, TrendingUp, ExternalLink, Edit
 import api from '../services/api';
 import { auth } from '../services/firebase';
 import Sidebar from '../components/Sidebar';
+// 1. Added Inbox import
+import Inbox from '../components/Inbox'; 
 
 const Dashboard = () => {
   const [myBusinesses, setMyBusinesses] = useState([]);
@@ -33,12 +35,9 @@ const Dashboard = () => {
 
   return (
     <div className="flex bg-[#050505] min-h-screen text-white overflow-hidden">
-      {/* 1. Sidebar Component */}
       <Sidebar />
 
-      {/* 2. Main Workspace */}
       <main className="flex-1 ml-24 lg:ml-72 p-8 lg:p-12 relative">
-        {/* Background Glow */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 blur-[150px] rounded-full -z-10" />
 
         <header className="mb-12">
@@ -51,7 +50,6 @@ const Dashboard = () => {
           </motion.div>
         </header>
 
-        {/* 3. Metric Cards (Inspired by Bold Funding) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <MetricCard 
             icon={<Briefcase className="text-blue-400" />} 
@@ -73,8 +71,7 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* 4. Registered Businesses Section */}
-        <section>
+        <section className="mb-16">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold tracking-tight">Your Registered Niches</h2>
             <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold hover:bg-white/10 transition">
@@ -108,7 +105,7 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-400 line-clamp-2 mb-6">Looking for: {biz.desiredService}</p>
                     <div className="flex gap-4">
                       <button className="px-4 py-2 bg-white text-black text-xs font-black rounded-xl uppercase hover:bg-blue-600 hover:text-white transition-all">Manage</button>
-                      <a href={biz.website} target="_blank" className="p-2 bg-white/5 rounded-xl hover:bg-white/10 text-gray-400">
+                      <a href={biz.website} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded-xl hover:bg-white/10 text-gray-400">
                         <ExternalLink size={16} />
                       </a>
                     </div>
@@ -118,12 +115,15 @@ const Dashboard = () => {
             </div>
           )}
         </section>
+
+        {/* 2. ADDED INBOX SECTION */}
+        {/* This will render all proposals sent to your businesses below the business list */}
+        <Inbox />
       </main>
     </div>
   );
 };
 
-// Sub-component for Metrics
 const MetricCard = ({ icon, label, value, color }) => (
   <motion.div 
     whileHover={{ y: -5 }}

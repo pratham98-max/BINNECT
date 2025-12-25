@@ -1,10 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* 1. Import Tailwind v4 base styles first */
+@import "tailwindcss";
+
+/* 2. Your custom theme variables and layers */
+@theme {
+  --color-brand-obsidian: #050505;
+}
 
 @layer base {
   body {
-    @apply bg-[#050505] text-white;
+    /* Use standard CSS if @apply fails, or ensure @import is at the top */
+    background-color: #050505;
+    color: white;
     font-family: 'Inter', sans-serif;
   }
 }

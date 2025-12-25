@@ -4,7 +4,6 @@ const Provider = require('../models/Provider');
 const User = require('../models/User'); 
 const { protect } = require('../middleware/authMiddleware');
 
-
 // 1. REGISTER ROUTE
 router.post('/register', protect, async (req, res) => {
   try {
@@ -50,65 +49,80 @@ router.get('/search', async (req, res) => {
   }
 });
 
-// 4. SAVE BUSINESS ROUTE (FIXED)
+// 4. GET SAVED BUSINESSES
+router.get('/saved', protect, async (req, res) => {
+  try {
+    const user = await User.findOne({ firebaseId: req.user.uid }).populate('savedProviders');
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user.savedProviders || []);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching saved businesses" });
+  }
+});
+
+// 5. SAVE BUSINESS ROUTE
 router.post('/save/:id', protect, async (req, res) => {
   try {
     const providerId = req.params.id;
     const userId = req.user.uid; 
-    const userUpdate = await User.findOneAndUpdate(
+    await User.findOneAndUpdate(
       { firebaseId: userId },
       { $addToSet: { savedProviders: providerId } },
       { new: true, upsert: true } 
     );
-    console.log(`✅ Saved business ${providerId} for user ${userId}`);
     res.status(200).json({ message: "Successfully bookmarked!" });
   } catch (err) {
-    console.error("❌ SAVE ERROR:", err.message);
     res.status(500).json({ message: "Server failed to save bookmark." });
   }
-  // 5. GET SAVED BUSINESSES (GET)
-router.get('/saved', protect, async (req, res) => {
-  try {
-    // Look for the user and 'fill in' the details from the Providers collection
-    const user = await User.findOne({ firebaseId: req.user.uid }).populate('savedProviders');
-    
-    if (!user) {
-      console.log("User record not found for UID:", req.user.uid);
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-    // Send the array of FULL business objects back to the frontend
-    res.json(user.savedProviders || []);
-  } catch (err) {
-    console.error("❌ FETCH SAVED ERROR:", err);
-    res.status(500).json({ message: "Error fetching saved businesses" });
-  }
 });
-// backend/routes/providerRoutes.js
 
 // 6. REMOVE SAVED BUSINESS (DELETE)
 router.delete('/saved/:id', protect, async (req, res) => {
   try {
     const providerId = req.params.id;
-    const userId = req.user.uid; // From authMiddleware
-
     const userUpdate = await User.findOneAndUpdate(
-      { firebaseId: userId },
-      { $pull: { savedProviders: providerId } }, // Removes ID from array
+      { firebaseId: req.user.uid },
+      { $pull: { savedProviders: providerId } },
       { new: true }
     );
-
-    if (!userUpdate) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    console.log(`🗑️ Removed business ${providerId} for user ${userId}`);
+    if (!userUpdate) return res.status(404).json({ message: "User not found" });
     res.status(200).json({ message: "Removed from saved" });
   } catch (err) {
-    console.error("❌ REMOVE ERROR:", err.message);
     res.status(500).json({ message: "Failed to remove business." });
   }
 });
+
+// 7. NEW: GET SINGLE BUSINESS BY ID (FOR PROFILE VIEW)
+router.get('/:id', async (req, res) => {
+  try {
+    const business = await Provider.findById(req.params.id);
+    if (!business) return res.status(404).json({ message: "Business not found" });
+    res.json(business);
+  } catch (err) {
+    console.error("Single fetch error:", err);
+    res.status(500).send('Server Error');
+  }
+  const express = require('express');
+const router = express.Router();
+const Enquiry = require('../models/Enquiry'); // You'll need to create this model
+const { protect } = require('../middleware/authMiddleware');
+
+router.post('/:providerId', protect, async (req, res) => {
+  try {
+    const newEnquiry = new Enquiry({
+      senderId: req.user.uid,
+      providerId: req.params.providerId,
+      message: req.body.message
+    });
+    await newEnquiry.save();
+    res.status(201).json({ message: "Enquiry sent!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+module.exports = router;
+});
+
 
 module.exports = router;

@@ -50,7 +50,6 @@ const SavedPage = () => {
       <Sidebar />
 
       <main className="flex-1 ml-24 lg:ml-72 p-8 lg:p-12 relative">
-        {/* Background Glows */}
         <div className="absolute top-[-10%] left-[20%] w-[600px] h-[600px] bg-purple-600/10 blur-[150px] rounded-full -z-10" />
 
         <header className="max-w-7xl mx-auto mb-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -84,7 +83,6 @@ const SavedPage = () => {
                     transition={{ delay: idx * 0.05 }}
                     className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[40px] p-10 group relative hover:border-purple-500/30 transition-all shadow-2xl"
                   >
-                    {/* Hover Glow Effect */}
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[40px]" />
 
                     <div className="flex justify-between items-start mb-10 relative z-10">
@@ -112,10 +110,20 @@ const SavedPage = () => {
                     </div>
 
                     <div className="flex gap-4 relative z-10">
-                      <button className="flex-[3] py-5 bg-white text-black font-black rounded-2xl hover:bg-purple-600 hover:text-white transition-all shadow-xl active:scale-95 text-xs uppercase tracking-widest">
-                        Contact Partner
-                      </button>
-                      <a href={biz.website} target="_blank" rel="noreferrer" className="flex-1 flex items-center justify-center bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all">
+                      {/* UPDATED: VIEW PROFILE LINK */}
+                      <Link 
+                        to={`/profile/${biz._id}`} 
+                        className="flex-[3] py-5 bg-white text-black font-black rounded-2xl hover:bg-purple-600 hover:text-white transition-all shadow-xl active:scale-95 text-xs uppercase tracking-widest text-center"
+                      >
+                        View Profile
+                      </Link>
+                      
+                      <a 
+                        href={biz.website?.startsWith('http') ? biz.website : `https://${biz.website}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="flex-1 flex items-center justify-center bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all"
+                      >
                         <ExternalLink size={20} className="text-gray-400" />
                       </a>
                     </div>

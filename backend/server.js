@@ -6,6 +6,8 @@ require('dotenv').config();
 // 1. Import Routes
 const authRoutes = require('./routes/authRoutes');
 const providerRoutes = require('./routes/providerRoutes');
+// ADDED: Import Enquiry Routes
+const enquiryRoutes = require('./routes/enquiryRoutes');
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use(express.json()); // Essential for parsing JSON data sent from React
 // 4. Register Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/providers', providerRoutes);
+// ADDED: Register Enquiry Routes
+app.use('/api/enquiries', enquiryRoutes);
 
 // Test Route
 app.get('/', (req, res) => res.send('Binnect API Running...'));
