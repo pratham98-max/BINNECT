@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom'; // Included Link import
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Globe, Target, Zap, ArrowLeft, Mail, Phone, ExternalLink } from 'lucide-react';
+import { Target, Zap, ArrowLeft, Mail, ExternalLink, ShieldCheck } from 'lucide-react';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
 
 const ProfilePage = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [biz, setBiz] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,67 +15,69 @@ const ProfilePage = () => {
       try {
         const { data } = await api.get(`/providers/${id}`);
         setBiz(data);
-      } catch (err) {
-        console.error("Profile load failed", err);
-      } finally {
-        setLoading(false);
-      }
+      } catch (err) { console.error(err); } finally { setLoading(false); }
     };
     fetchProfile();
   }, [id]);
 
-  if (loading) return <div className="min-h-screen bg-[#050505] flex items-center justify-center font-black animate-pulse uppercase tracking-widest text-blue-500">Decoding Niche...</div>;
-  if (!biz) return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white font-bold uppercase tracking-tighter">Profile Not Found</div>;
+  if (loading) return <div className="min-h-screen bg-[#050505] flex items-center justify-center font-black animate-pulse text-blue-500 uppercase tracking-widest">Decoding Niche...</div>;
+  if (!biz) return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white font-black uppercase">Profile Not Found</div>;
 
   return (
-    <div className="flex bg-[#050505] min-h-screen text-white">
+    <div className="bg-[#050505] min-h-screen text-white relative overflow-hidden">
       <Sidebar />
-      <main className="flex-1 ml-24 lg:ml-72 p-8 lg:p-16 relative">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 blur-[150px] rounded-full -z-10" />
+      
+      {/* HERO GLOW */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-blue-600/10 blur-[160px] -z-10" />
 
-        <Link to="/explore" className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-all mb-12 font-bold uppercase text-xs tracking-widest group">
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to Discover
+      <main className="max-w-6xl mx-auto px-6 pt-32 pb-24 relative z-10">
+        <Link to="/explore" className="inline-flex items-center gap-2 text-gray-500 hover:text-white mb-16 uppercase text-[10px] font-black tracking-[0.3em] transition-all group">
+          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Discovery
         </Link>
 
-        <div className="max-w-5xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row gap-12 items-start">
-            <div className="w-32 h-32 bg-blue-600/20 rounded-[40px] border border-blue-500/30 flex items-center justify-center text-blue-500 shadow-2xl shadow-blue-500/20">
-              <Zap size={48} />
-            </div>
-
-            <div className="flex-1">
-              <h1 className="text-6xl font-bold tracking-tighter mb-4">{biz.businessName}</h1>
-              <div className="flex gap-4 mb-8">
-                <span className="px-4 py-1 bg-white/5 border border-white/10 rounded-full text-blue-400 text-[10px] font-black uppercase tracking-widest">{biz.category}</span>
-                <span className="px-4 py-1 bg-white/5 border border-white/10 rounded-full text-green-400 text-[10px] font-black uppercase tracking-widest">Verified Niche</span>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[35px] hover:border-blue-500/30 transition-all">
-                  <p className="text-[10px] font-black uppercase text-gray-500 mb-4 tracking-widest flex items-center gap-2"><Target size={12}/> Target Audience</p>
-                  <p className="text-xl font-medium italic text-gray-200">"{biz.targetCustomer}"</p>
-                </div>
-                <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[35px] hover:border-purple-500/30 transition-all">
-                  <p className="text-[10px] font-black uppercase text-gray-500 mb-4 tracking-widest flex items-center gap-2"><Zap size={12}/> Core Solution</p>
-                  <p className="text-xl font-medium italic text-gray-200">"{biz.desiredService}"</p>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-4">
-                <a href={biz.website} target="_blank" className="px-10 py-5 bg-white text-black font-black rounded-2xl flex items-center gap-3 hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-95 uppercase tracking-widest text-xs">
-                  Visit Website <ExternalLink size={16} />
-                </a>
-
-                {/* UPDATED: ACTIVATE ENQUIRY LINK */}
-                <Link 
-                  to={`/enquiry/${id}`} 
-                  className="px-10 py-5 bg-white/5 border border-white/10 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-white/10 transition-all flex items-center gap-3 text-center"
-                >
-                  <Mail size={16}/> Send Inquiry
-                </Link>
-              </div>
-            </div>
+        {/* CENTERED HEADER */}
+        <div className="flex flex-col items-center text-center mb-20">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-44 h-44 bg-blue-600/10 rounded-[55px] border border-blue-500/20 flex items-center justify-center text-blue-500 mb-10 shadow-3xl shadow-blue-500/20">
+            <Zap size={72} />
           </motion.div>
+          
+          <h1 className="text-7xl md:text-8xl font-black tracking-tighter mb-6 italic uppercase leading-none">{biz.businessName}</h1>
+          
+          <div className="flex gap-4">
+            <span className="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">{biz.category}</span>
+            <span className="px-6 py-2 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+              <ShieldCheck size={12} /> Verified Niche
+            </span>
+          </div>
+        </div>
+
+        {/* BALANCED GRID */}
+        <div className="grid md:grid-cols-2 gap-8 mb-20">
+          <motion.div whileHover={{ y: -5 }} className="bg-white/[0.02] border border-white/10 p-12 rounded-[50px] backdrop-blur-3xl hover:border-blue-500/30 transition-all">
+            <div className="flex items-center gap-3 mb-8">
+              <Target size={18} className="text-gray-500" />
+              <p className="text-[10px] font-black uppercase text-gray-500 tracking-[0.3em]">Target Audience</p>
+            </div>
+            <p className="text-2xl font-medium italic text-gray-200 leading-relaxed">"{biz.targetCustomer}"</p>
+          </motion.div>
+
+          <motion.div whileHover={{ y: -5 }} className="bg-white/[0.02] border border-white/10 p-12 rounded-[50px] backdrop-blur-3xl hover:border-purple-500/30 transition-all">
+            <div className="flex items-center gap-3 mb-8">
+              <Zap size={18} className="text-gray-500" />
+              <p className="text-[10px] font-black uppercase text-gray-500 tracking-[0.3em]">Core Solution</p>
+            </div>
+            <p className="text-2xl font-medium italic text-gray-200 leading-relaxed">"{biz.desiredService}"</p>
+          </motion.div>
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="flex flex-col sm:flex-row justify-center gap-6">
+          <a href={biz.website} target="_blank" rel="noopener noreferrer" className="px-14 py-7 bg-white text-black font-black rounded-[28px] flex items-center justify-center gap-4 hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95 uppercase tracking-widest text-xs">
+            Launch Website <ExternalLink size={18} />
+          </a>
+          <Link to={`/enquiry/${id}`} className="px-14 py-7 bg-white/5 border border-white/10 rounded-[28px] font-black uppercase text-xs tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-4 shadow-xl active:scale-95">
+            <Mail size={18} /> Direct Inquiry
+          </Link>
         </div>
       </main>
     </div>

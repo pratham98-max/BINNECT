@@ -9,13 +9,22 @@ import RegisterPage from './pages/RegisterPage';
 import SavedPage from './pages/SavedPage';
 import ProfilePage from './pages/ProfilePage';
 import EnquiryPage from './pages/EnquiryPage';
-import ProtectedRoute from './components/ProtectedRoute'; // Ensure you create this file!
+import ProtectedRoute from './components/ProtectedRoute'; 
 import MessagesPage from './pages/MessagesPage';
+
+// 2. Import the AI Chat Bot component
+import AIChat from './components/AIChat';
 
 function App() {
   return (
     <Router>
-      <div className="font-sans">
+      <div className="font-sans relative">
+        
+        {/* 3. GLOBAL COMPONENTS
+          AIChat is placed here so it persists across all page changes.
+        */}
+        <AIChat />
+
         <Routes>
           {/* Public Route: Anyone can see the Landing Page */}
           <Route path="/" element={<LandingPage />} />
@@ -56,11 +65,12 @@ function App() {
               <EnquiryPage />
             </ProtectedRoute>
           } />
+
           <Route path="/messages" element={
-  <ProtectedRoute>
-    <MessagesPage />
-  </ProtectedRoute>
-} />
+            <ProtectedRoute>
+              <MessagesPage />
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all for mistakes */}
           <Route path="*" element={
