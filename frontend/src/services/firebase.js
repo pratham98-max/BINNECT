@@ -12,13 +12,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+// ADD 'export' HERE so the LandingPage can find it
+export const provider = new GoogleAuthProvider(); 
 
 export const loginWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    return result.user; // Returns the user object with name, email, and UID
+    return result.user; 
   } catch (error) {
     console.error("Login Error:", error);
+    throw error; // Throw so the LandingPage can catch it
   }
 };

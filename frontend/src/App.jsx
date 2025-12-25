@@ -8,34 +8,59 @@ import Dashboard from './pages/Dashboard';
 import RegisterPage from './pages/RegisterPage';
 import SavedPage from './pages/SavedPage';
 import ProfilePage from './pages/ProfilePage';
-import EnquiryPage from './pages/EnquiryPage'; // Added this import
+import EnquiryPage from './pages/EnquiryPage';
+import ProtectedRoute from './components/ProtectedRoute'; // Ensure you create this file!
+import MessagesPage from './pages/MessagesPage';
 
 function App() {
   return (
     <Router>
       <div className="font-sans">
         <Routes>
-          {/* Main Landing Page */}
+          {/* Public Route: Anyone can see the Landing Page */}
           <Route path="/" element={<LandingPage />} />
           
-          {/* Business Discovery */}
-          <Route path="/explore" element={<ExplorePage />} />
+          {/* Protected Routes: These require a login to access */}
+          <Route path="/explore" element={
+            <ProtectedRoute>
+              <ExplorePage />
+            </ProtectedRoute>
+          } />
           
-          {/* User Workspace */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
           
-          {/* Registration Form */}
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={
+            <ProtectedRoute>
+              <RegisterPage />
+            </ProtectedRoute>
+          } />
           
-          {/* Saved Businesses */}
-          <Route path="/saved" element={<SavedPage />} />
+          <Route path="/saved" element={
+            <ProtectedRoute>
+              <SavedPage />
+            </ProtectedRoute>
+          } />
 
-          {/* Dynamic Profile Route */}
-          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
           
-          {/* 2. THE NEW DYNAMIC ENQUIRY ROUTE */}
-          {/* This allows users to reach /enquiry/[business-id] */}
-          <Route path="/enquiry/:id" element={<EnquiryPage />} />
+          <Route path="/enquiry/:id" element={
+            <ProtectedRoute>
+              <EnquiryPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/messages" element={
+  <ProtectedRoute>
+    <MessagesPage />
+  </ProtectedRoute>
+} />
           
           {/* Catch-all for mistakes */}
           <Route path="*" element={
