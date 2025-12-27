@@ -16,7 +16,18 @@ const app = express();
 connectDB();
 
 // 3. Middleware
-app.use(cors()); 
+// UPDATED CORS CONFIGURATION
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Vite default local port
+    'http://localhost:3000', // React default local port
+    'https://binnect.netlify.app' // REPLACE with your actual Netlify URL
+  ],
+  credentials: true, // Allows cookies/headers for authentication
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -43,9 +54,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 7. Start Server (CRITICAL for Render)
-// Render expects your app to bind to a port
-const PORT = process.env.PORT || 10000; // Render default port is 10000
+// 7. Start Server
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
     console.log(`🚀 Server started on port ${PORT}`);
 });
